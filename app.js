@@ -15,7 +15,7 @@ const dbConfig = {
   database: 'dayong_sq',
 };
 
-const runQuery = (res, query, dbConfig) => {
+const runQuery = (res, query) => {
   const dbConn = new sql.ConnectionPool(dbConfig);
   dbConn
     .connect()
