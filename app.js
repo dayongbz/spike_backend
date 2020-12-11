@@ -83,16 +83,16 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get(
-  // 이메일, 닉네임 중복 확인
+  // check overlap(nickname, email)
   '/users',
   doAsync(async (req, res) => {
     let query, input;
 
     if (req.query.nickname) {
-      query = 'select nickname from users where nickname = @nickname';
+      query = 'SELECT nickname FROM Users WHERE nickname = @nickname';
       input = ['nickname', sql.VarChar(20), req.query.nickname];
     } else if (req.query.email) {
-      query = 'select email from users where email = @email';
+      query = 'SELECT email FROM Users WHERE email = @email';
       input = ['email', sql.VarChar(20), req.query.email];
     }
 
@@ -106,44 +106,76 @@ app.get(
 );
 
 app.post(
-  // 계정 추가
+  // create new account
   '/users',
   doAsync(async (req, res) => {
+    const pwdSalt = CryptoJS.lib.WordArray.random(128 / 8);
+    const keystoreSalt = CryptoJS.lib.WordArray.random(128 / 8);
+    const password = CryptoJS.PBKDF2(req.body.password, pwdSalt, {
+      keySize: 256 / 32,
+      iterations: process.env.ITERATION,
+    });
+    const keystore = CryptoJS.PBKDF2(req.body.keystore, keystoreSalt, {
+      keySize: 256 / 32,
+      iterations: process.env.ITERATION,
+    });
+
     const result = await runTransQuery(
-      `INSERT INTO Users( nickname, address, email, keystore) VALUES(@nickname, @address, @email, @keystore)`,
+      `INSERT INTO Users(nickname, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@nickname, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)`,
       ['nickname', sql.VarChar(20), req.body.nickname],
+      ['password', sql.VarChar(50), password],
+      ['pwd_salt', sql.VarChar(100), pwdSalt],
       ['address', sql.VarChar(100), req.body.address],
       ['email', sql.VarChar(200), req.body.email],
-      ['keystore', sql.Text, req.body.keystore],
+      ['keystore', sql.Text, keystore],
+      ['keystore_salt', sql.VarChar(100), keystoreSalt],
     );
     sendResult(res, result);
   }),
 );
 
 app.get(
-  '/emailverify/:email',
+  // check email verify status
+  '/emailverify',
   doAsync(async (req, res) => {
+    const email = CryptoJS.SHA3(req.query.email, { outputLength: 256 });
     const result = await runQuery(
-      'SELECT id, verify FROM Emailverify WHERE email = @email AND verify = 0 ORDER BY id DESC',
-      ['email', sql.VarChar(100), req.params.email],
+      'SELECT verify FROM Emailverify WHERE email = @email AND verify = 0 ORDER BY id DESC',
+      ['email', sql.VarChar(100), email],
     );
     result !== defaultErrorMsg
-      ? res.send(result[0])
+      ? result.length == 0
+        ? res.status(406).send('Not Exist')
+        : res.send(result[0])
       : res.status(500).send(result);
   }),
 );
 
 app.post(
+  // create new email verify
   '/emailverify',
   doAsync(async (req, res) => {
-    const emailSha = {
-      email: req.body.email,
-      code: CryptoJS.lib.WordArray.random(128 / 8).toString(),
-    };
+    const email = CryptoJS.SHA3(req.body.email, { outputLength: 256 });
+    const code = CryptoJS.lib.WordArray.random(128 / 8);
+
     const result = await runTransQuery(
       'INSERT INTO Emailverify(email, code) VALUES(@email, @code)',
-      ['email', sql.VarChar(100), emailSha.email],
-      ['code', sql.VarChar(100), emailSha.code],
+      ['email', sql.VarChar(100), email],
+      ['code', sql.VarChar(100), code],
+    );
+    sendResult(res, result);
+  }),
+);
+
+app.delete(
+  // delete target in emailverify table
+  '/emailverify',
+  doAsync(async (req, res) => {
+    const email = CryptoJS.SHA3(req.query.email, { outputLength: 256 });
+
+    const result = await runTransQuery(
+      'DELETE FROM Emailverify WHERE email = @email',
+      ['email', sql.VarChar(100), email],
     );
     sendResult(res, result);
   }),
