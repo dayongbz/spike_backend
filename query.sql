@@ -7,11 +7,11 @@ DROP TABLE EmailVerify;
 CREATE TABLE Users
 (
   nickname VARCHAR(20) NOT NULL,
-  password VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   pwd_salt VARCHAR(100) NOT NULL,
   address VARCHAR(100) NOT NULL,
-  email VARCHAR(20) NOT NULL,
-  keystore TEXT NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  keystore VARCHAR(255) NOT NULL,
   keystore_salt VARCHAR(100) NOT NULL,
   PRIMARY KEY(nickname)
 );
