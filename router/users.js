@@ -15,8 +15,8 @@ const router = express.Router();
 
 dotenv.config();
 
+// check overlap(nickname, email)
 router.get(
-  // check overlap(nickname, email)
   '/',
   doAsync(async (req, res) => {
     let query, input;
@@ -38,8 +38,8 @@ router.get(
   }),
 );
 
+// create new account
 router.post(
-  // create new account
   '/',
   doAsync(async (req, res) => {
     const pwdSalt = CryptoJS.lib.WordArray.random(128 / 8);
@@ -52,7 +52,6 @@ router.post(
       keySize: 256 / 32,
       iterations: process.env.ITERATION,
     });
-
     const result = await runTransQuery(
       `INSERT INTO Users(nickname, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@nickname, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)`,
       ['nickname', sql.VarChar(20), req.body.nickname],
