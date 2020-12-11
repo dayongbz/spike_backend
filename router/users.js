@@ -15,25 +15,25 @@ const router = express.Router();
 
 dotenv.config();
 
-// check overlap(nickname, email)
+// get nickname or address
 router.get(
   '/',
   doAsync(async (req, res) => {
     let query, input;
 
     if (req.query.nickname) {
-      query = 'SELECT nickname FROM Users WHERE nickname = @nickname';
+      query = 'SELECT address FROM Users WHERE nickname = @nickname';
       input = ['nickname', sql.VarChar(20), req.query.nickname];
-    } else if (req.query.email) {
-      query = 'SELECT email FROM Users WHERE email = @email';
-      input = ['email', sql.VarChar(20), req.query.email];
+    } else if (req.query.address) {
+      query = 'SELECT nickname FROM Users WHERE address = @address';
+      input = ['address', sql.VarChar(100), req.query.address];
     }
 
     const result = await runQuery(query, input);
     result !== defaultErrorMsg
       ? result.length === 0
-        ? res.send('You can use it')
-        : res.status(406).send("You can't use it")
+        ? res.status(406).send('Not Exist')
+        : res.send(result[0])
       : res.status(500).send(result);
   }),
 );
@@ -63,6 +63,31 @@ router.post(
       ['keystore_salt', sql.VarChar(100), keystoreSalt],
     );
     sendResult(res, result);
+  }),
+);
+
+// check overlap(nickname, email)
+router.get(
+  '/check',
+  doAsync(async (req, res) => {
+    let query, input;
+
+    if (req.query.nickname) {
+      query = 'SELECT nickname FROM Users WHERE nickname = @nickname';
+      input = ['nickname', sql.VarChar(20), req.query.nickname];
+    } else if (req.query.email) {
+      query = 'SELECT email FROM Users WHERE email = @email';
+      input = ['email', sql.VarChar(20), req.query.email];
+    } else {
+      res.status(500).send();
+    }
+
+    const result = await runQuery(query, input);
+    result !== defaultErrorMsg
+      ? result.length === 0
+        ? res.send('You can use it')
+        : res.status(406).send("You can't use it")
+      : res.status(500).send(result);
   }),
 );
 
