@@ -47,9 +47,9 @@ const runTransQuery = async (query, ...input) => {
         request.input(input[i][0], input[i][1], input[i][2]);
       }
     }
-    await request.query(query);
+    const result = await request.query(query);
     await transaction.commit();
-    return 'success';
+    return result.rowsAffected[0] >= 1 ? 'success' : defaultErrorMsg;
   } catch (err) {
     console.error(err);
     return defaultErrorMsg;

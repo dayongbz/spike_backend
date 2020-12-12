@@ -10,6 +10,7 @@ const {
   doAsync,
   defaultErrorMsg,
 } = require('../query');
+const sendMail = require('../mail');
 
 const router = express.Router();
 
@@ -43,6 +44,10 @@ router.post(
       ['email', sql.VarChar(100), email],
       ['code', sql.VarChar(100), code],
     );
+    sendMail(
+      req.body.email,
+      `https://dayong.xyz/emailverify?email=${email}&code=${code}`,
+    );
     sendResult(res, result);
   }),
 );
@@ -51,10 +56,9 @@ router.post(
 router.patch(
   '/',
   doAsync(async (req, res) => {
-    const email = CryptoJS.SHA3(req.query.email, { outputLength: 256 });
     const result = await runTransQuery(
-      'UPDATE Emailverify SET verify = 1 WHERE email = @email AND code = @code)',
-      ['email', sql.VarChar(100), email],
+      'UPDATE Emailverify SET verify = 1 WHERE email = @email AND code = @code',
+      ['email', sql.VarChar(100), req.query.email],
       ['code', sql.VarChar(100), req.query.code],
     );
     sendResult(res, result);

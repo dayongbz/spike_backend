@@ -72,38 +72,39 @@ router.patch(
   doAsync(async (req, res) => {
     const input = [];
     let query;
-    if (req.query.password) {
-      input.push(['nickname', sql.VarChar(20), req.query.nickname]);
-      const {
-        0: { password: prevPwd, pwd_salt: prevSalt },
-      } = await runQuery(
-        'SELECT password, pwd_salt FROM Users WHERE nickname = @nickname',
-        input[0],
-      );
-      const password = CryptoJS.PBKDF2(req.query.password, prevSalt, {
-        keySize: 256 / 32,
-        iterations: process.env.ITERATION,
-      });
+    // delete password
+    // if (req.query.password) {
+    //   input.push(['nickname', sql.VarChar(20), req.query.nickname]);
+    //   const {
+    //     0: { password: prevPwd, pwd_salt: prevSalt },
+    //   } = await runQuery(
+    //     'SELECT password, pwd_salt FROM Users WHERE nickname = @nickname',
+    //     input[0],
+    //   );
+    //   const password = CryptoJS.PBKDF2(req.query.password, prevSalt, {
+    //     keySize: 256 / 32,
+    //     iterations: process.env.ITERATION,
+    //   });
 
-      if (prevPwd === password.toString()) {
-        const pwdSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-        const after = CryptoJS.PBKDF2(req.query.after, pwdSalt, {
-          keySize: 256 / 32,
-          iterations: process.env.ITERATION,
-        });
+    //   if (prevPwd === password.toString()) {
+    //     const pwdSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
+    //     const after = CryptoJS.PBKDF2(req.query.after, pwdSalt, {
+    //       keySize: 256 / 32,
+    //       iterations: process.env.ITERATION,
+    //     });
 
-        input.push(['after', sql.VarChar(255), after]);
-        input.push(['pwd_salt', sql.VarChar(100), pwdSalt]);
-        input.push(['password', sql.VarChar(255), prevPwd]);
+    //     input.push(['after', sql.VarChar(255), after]);
+    //     input.push(['pwd_salt', sql.VarChar(100), pwdSalt]);
+    //     input.push(['password', sql.VarChar(255), prevPwd]);
 
-        query =
-          'UPDATE Users SET password = @after, pwd_salt = @pwd_salt  WHERE nickname = @nickname AND password = @password';
-      }
-    } else {
-      query = 'UPDATE Users SET nickname = @after WHERE nickname = @nickname';
-      input.push(['nickname', sql.VarChar(20), req.query.nickname]);
-      input.push(['after', sql.VarChar(20), req.query.after]);
-    }
+    //     query =
+    //       'UPDATE Users SET password = @after, pwd_salt = @pwd_salt  WHERE nickname = @nickname AND password = @password';
+    //   }
+    // }
+
+    query = 'UPDATE Users SET nickname = @after WHERE nickname = @nickname';
+    input.push(['nickname', sql.VarChar(20), req.query.nickname]);
+    input.push(['after', sql.VarChar(20), req.query.after]);
     const result = await runTransQuery(query, ...input);
     sendResult(res, result);
     !res.headersSent && res.status(500).send(defaultErrorMsg);
