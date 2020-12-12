@@ -41,3 +41,5 @@ FROM Users;
 
 SELECT *
 FROM Emailverify;
+
+UPDATE Users SET password = 'dsa', pwd_salt = 'dasf'  WHERE nickname = 'dayong' AND password = 'cb149d947305d8e2f148979d0567e7b62308a5445e1c38fe5a63ae039ac7ff92';
