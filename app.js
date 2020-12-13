@@ -4,7 +4,7 @@ const cors = require('cors');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const session = require('express-session');
-const redirector = require('redirect-https');
+const logger = require('morgan');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
@@ -52,7 +52,7 @@ app.use(session(sess));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
-// app.use('/', redirector);
+app.use(dev ? logger('dev', { format: 'dev' }) : logger({ format: 'default' }));
 
 app.all('*', (req, res, next) => {
   let protocol = req.headers['x-forwarded-proto'] || req.protocol;

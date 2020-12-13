@@ -24,6 +24,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "morgan": "^1.10.0",
     "mssql": "^6.2.3",
     "nodemailer": "^6.4.16",
     "passport": "^0.4.1",
