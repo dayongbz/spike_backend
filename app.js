@@ -30,13 +30,13 @@ if (!dev) {
   app.set('trust proxy', 1);
   sess.cookie.secure = true;
   httpsOptions.ca = fs.readFileSync(
-    '/etc/letsencrypt/live/dayong.xyz/fullchain.pem',
+    '/etc/letsencrypt/live/api.dayong.xyz/fullchain.pem',
   );
   httpsOptions.key = fs.readFileSync(
-    '/etc/letsencrypt/live/dayong.xyz/privkey.pem',
+    '/etc/letsencrypt/live/api.dayong.xyz/privkey.pem',
   );
   httpsOptions.cert = fs.readFileSync(
-    '/etc/letsencrypt/live/dayong.xyz/cert.pem',
+    '/etc/letsencrypt/live/api.dayong.xyz/cert.pem',
   );
 } else {
   httpsOptions.key = fs.readFileSync('./devKey/private.pem');
