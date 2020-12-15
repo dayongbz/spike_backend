@@ -6,25 +6,25 @@ DROP TABLE EmailVerify;
 
 CREATE TABLE Users
 (
-  nickname VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL,
   password VARCHAR(255) NOT NULL,
   pwd_salt VARCHAR(100) NOT NULL,
   address VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
   keystore VARCHAR(255) NOT NULL,
   keystore_salt VARCHAR(100) NOT NULL,
-  PRIMARY KEY(nickname)
+  PRIMARY KEY(username)
 );
 
 
 CREATE TABLE Contacts
 (
-  nickname VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL,
   address VARCHAR(100) NOT NULL,
-  friend_nickname VARCHAR(20) NOT NULL,
-  PRIMARY KEY(nickname),
-  FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE,
-  FOREIGN KEY(friend_nickname) REFERENCES Users(nickname) ON DELETE CASCADE
+  friend_username VARCHAR(20) NOT NULL,
+  PRIMARY KEY(username),
+  FOREIGN KEY(username) REFERENCES Users(username) ON DELETE CASCADE,
+  FOREIGN KEY(friend_username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE Emailverify
@@ -42,4 +42,4 @@ FROM Users;
 SELECT *
 FROM Emailverify;
 
-UPDATE Users SET password = 'dsa', pwd_salt = 'dasf'  WHERE nickname = 'dayong' AND password = 'cb149d947305d8e2f148979d0567e7b62308a5445e1c38fe5a63ae039ac7ff92';
+UPDATE Users SET password = 'dsa', pwd_salt = 'dasf'  WHERE username = 'dayong' AND password = 'cb149d947305d8e2f148979d0567e7b62308a5445e1c38fe5a63ae039ac7ff92';

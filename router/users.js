@@ -15,17 +15,17 @@ const router = express.Router();
 
 dotenv.config();
 
-// get nickname or address
+// get username or address
 router.get(
   '/',
   doAsync(async (req, res) => {
     let query, input;
 
-    if (req.query.nickname) {
-      query = 'SELECT address FROM Users WHERE nickname = @nickname';
-      input = ['nickname', sql.VarChar(20), req.query.nickname];
+    if (req.query.username) {
+      query = 'SELECT address FROM Users WHERE username = @username';
+      input = ['username', sql.VarChar(20), req.query.username];
     } else if (req.query.address) {
-      query = 'SELECT nickname FROM Users WHERE address = @address';
+      query = 'SELECT username FROM Users WHERE address = @address';
       input = ['address', sql.VarChar(100), req.query.address];
     }
 
@@ -53,8 +53,8 @@ router.post(
       iterations: process.env.ITERATION,
     });
     const result = await runTransQuery(
-      'INSERT INTO Users(nickname, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@nickname, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)',
-      ['nickname', sql.VarChar(20), req.body.nickname],
+      'INSERT INTO Users(username, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)',
+      ['username', sql.VarChar(20), req.body.username],
       ['password', sql.VarChar(255), password],
       ['pwd_salt', sql.VarChar(100), pwdSalt],
       ['address', sql.VarChar(100), req.body.address],
@@ -66,7 +66,7 @@ router.post(
   }),
 );
 
-// change password or nickname
+// change password or username
 router.patch(
   '/',
   doAsync(async (req, res) => {
@@ -74,11 +74,11 @@ router.patch(
     let query;
     // delete password
     // if (req.query.password) {
-    //   input.push(['nickname', sql.VarChar(20), req.query.nickname]);
+    //   input.push(['username', sql.VarChar(20), req.query.username]);
     //   const {
     //     0: { password: prevPwd, pwd_salt: prevSalt },
     //   } = await runQuery(
-    //     'SELECT password, pwd_salt FROM Users WHERE nickname = @nickname',
+    //     'SELECT password, pwd_salt FROM Users WHERE username = @username',
     //     input[0],
     //   );
     //   const password = CryptoJS.PBKDF2(req.query.password, prevSalt, {
@@ -98,12 +98,12 @@ router.patch(
     //     input.push(['password', sql.VarChar(255), prevPwd]);
 
     //     query =
-    //       'UPDATE Users SET password = @after, pwd_salt = @pwd_salt  WHERE nickname = @nickname AND password = @password';
+    //       'UPDATE Users SET password = @after, pwd_salt = @pwd_salt  WHERE username = @username AND password = @password';
     //   }
     // }
 
-    query = 'UPDATE Users SET nickname = @after WHERE nickname = @nickname';
-    input.push(['nickname', sql.VarChar(20), req.query.nickname]);
+    query = 'UPDATE Users SET username = @after WHERE username = @username';
+    input.push(['username', sql.VarChar(20), req.query.username]);
     input.push(['after', sql.VarChar(20), req.query.after]);
     const result = await runTransQuery(query, ...input);
     sendResult(res, result);
@@ -111,15 +111,15 @@ router.patch(
   }),
 );
 
-// check overlap(nickname, email)
+// check overlap(username, email)
 router.get(
   '/check',
   doAsync(async (req, res) => {
     let query, input;
 
-    if (req.query.nickname) {
-      query = 'SELECT nickname FROM Users WHERE nickname = @nickname';
-      input = ['nickname', sql.VarChar(20), req.query.nickname];
+    if (req.query.username) {
+      query = 'SELECT username FROM Users WHERE username = @username';
+      input = ['username', sql.VarChar(20), req.query.username];
     } else if (req.query.email) {
       query = 'SELECT email FROM Users WHERE email = @email';
       input = ['email', sql.VarChar(20), req.query.email];
