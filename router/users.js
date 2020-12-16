@@ -50,7 +50,7 @@ router.post(
     });
     // const keystore = CryptoJS.AES.encrypt(req.body.keystore, keystoreSalt);
     const result = await runTransQuery(
-      'INSERT INTO Users(username, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)',
+      'INSERT INTO Users(username, password, pwd_salt, address, email, keystore) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore)',
       ['username', sql.VarChar(20), req.body.username],
       ['password', sql.VarChar(255), password],
       ['pwd_salt', sql.VarChar(100), pwdSalt],
