@@ -46,7 +46,7 @@ router.post(
     );
     sendMail(
       req.body.email,
-      `https://dayong.xyz/emailverify?email=${email}&code=${code}`,
+      `https://spike.dayong.xyz/emailverify?email=${email}&code=${code}`,
     );
     sendResult(res, result);
   }),
