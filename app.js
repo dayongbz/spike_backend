@@ -8,6 +8,7 @@ const logger = require('morgan');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const flash = require('connect-flash');
 
 const usersRouter = require('./router/users');
 const emailverifyRouter = require('./router/emailverify');
@@ -51,6 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session(sess));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 app.use(cors());
 app.use(dev ? logger('dev', { format: 'dev' }) : logger({ format: 'default' }));
 
@@ -70,6 +72,7 @@ app.all('*', (req, res, next) => {
 app.use('/users', usersRouter);
 app.use('/emailverify', emailverifyRouter);
 app.use('/login', loginRouter);
+
 http.createServer(app).listen(80, () => {
   console.log('start http server');
 });
