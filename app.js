@@ -53,7 +53,12 @@ app.use(session(sess));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
 app.use(dev ? logger('dev', { format: 'dev' }) : logger({ format: 'default' }));
 
 app.all('*', (req, res, next) => {
