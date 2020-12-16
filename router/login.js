@@ -9,10 +9,12 @@ dotenv.config();
 router.post(
   '/',
   passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
     failureFlash: true,
   }),
+  (req, res) => {
+    const { username, keystore } = {};
+    res.send('success');
+  },
 );
 
 module.exports = router;
