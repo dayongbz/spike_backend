@@ -30,6 +30,7 @@ const sess = {
 if (!dev) {
   app.set('trust proxy', 1);
   sess.cookie.secure = true;
+  sess.cookie.sameSite = 'none';
   httpsOptions.ca = fs.readFileSync(
     '/etc/letsencrypt/live/api.dayong.xyz/fullchain.pem',
   );
