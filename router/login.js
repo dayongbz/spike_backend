@@ -6,6 +6,10 @@ const router = express.Router();
 
 dotenv.config();
 
+router.get('/', (req, res) => {
+  console.log(req.user);
+});
+
 router.post(
   '/',
   passport.authenticate('local', {
