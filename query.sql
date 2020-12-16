@@ -12,7 +12,7 @@ CREATE TABLE Users
   address VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
   keystore TEXT NOT NULL,
-  keystore_salt VARCHAR(100) NOT NULL,
+  -- keystore_salt VARCHAR(100) NOT NULL,
   PRIMARY KEY(username)
 );
 
