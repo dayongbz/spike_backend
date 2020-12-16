@@ -52,7 +52,6 @@ router.post(
     //   JSON.stringify(req.body.keystore),
     //   keystoreSalt,
     // );
-    console.log(keystore, keystoreSalt);
     const result = await runTransQuery(
       'INSERT INTO Users(username, password, pwd_salt, address, email, keystore) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore)',
       ['username', sql.VarChar(20), req.body.username],
