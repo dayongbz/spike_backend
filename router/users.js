@@ -48,10 +48,7 @@ router.post(
       keySize: 256 / 32,
       iterations: process.env.ITERATION,
     });
-    const keystore = CryptoJS.PBKDF2(req.body.keystore, keystoreSalt, {
-      keySize: 256 / 32,
-      iterations: process.env.ITERATION,
-    });
+    const keystore = CryptoJS.AES.encrypt(req.body.keystore, keystoreSalt);
     const result = await runTransQuery(
       'INSERT INTO Users(username, password, pwd_salt, address, email, keystore, keystore_salt) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore, @keystore_salt)',
       ['username', sql.VarChar(20), req.body.username],
@@ -59,7 +56,7 @@ router.post(
       ['pwd_salt', sql.VarChar(100), pwdSalt],
       ['address', sql.VarChar(100), req.body.address],
       ['email', sql.VarChar(100), req.body.email],
-      ['keystore', sql.VarChar(255), keystore],
+      ['keystore', sql.TEXT, keystore],
       ['keystore_salt', sql.VarChar(100), keystoreSalt],
     );
     sendResult(res, result);

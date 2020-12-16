@@ -11,7 +11,7 @@ CREATE TABLE Users
   pwd_salt VARCHAR(100) NOT NULL,
   address VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
-  keystore VARCHAR(255) NOT NULL,
+  keystore TEXT NOT NULL,
   keystore_salt VARCHAR(100) NOT NULL,
   PRIMARY KEY(username)
 );
@@ -38,6 +38,8 @@ CREATE TABLE Emailverify
 
 SELECT *
 FROM Users;
+
+DELETE FROM Users WHERE username = 'dayongbz';
 
 SELECT *
 FROM Emailverify;
