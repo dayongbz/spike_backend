@@ -1,3 +1,4 @@
+const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const CryptoJS = require('crypto-js');
 const sql = require('mssql');
@@ -7,8 +8,20 @@ const { runQuery } = require('../query');
 
 dotenv.config();
 
-module.exports = async (passport) => {
+module.exports = async () => {
   try {
+    passport.serializeUser((user, done) => {
+      done(null, user.username);
+    });
+
+    passport.deserializeUser(async (username, done) => {
+      // const result = await runQuery(
+      //   'SELECT * FROM Users WHERE username = @username',
+      //   ['username', sql.VarChar(20), username],
+      // );
+      // console.log(result);
+      done(null, username);
+    });
     passport.use(
       new LocalStrategy(async (username, password, done) => {
         const saltResult = await runQuery(
@@ -35,18 +48,6 @@ module.exports = async (passport) => {
         }
       }),
     );
-
-    passport.serializeUser((user, done) => {
-      done(null, user.username);
-    });
-
-    passport.deserializeUser(async (username, done) => {
-      const result = await runQuery(
-        'SELECT * FROM Users WHERE username = @username',
-        ['username', sql.VarChar(20), username],
-      );
-      done(null, result[0]);
-    });
   } catch (err) {
     console.error(err);
     return done(null, false, { message: 'Incorrect' });
