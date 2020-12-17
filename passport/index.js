@@ -11,16 +11,11 @@ dotenv.config();
 module.exports = async () => {
   try {
     passport.serializeUser((user, done) => {
-      done(null, user.username);
+      done(null, user);
     });
 
-    passport.deserializeUser(async (username, done) => {
-      // const result = await runQuery(
-      //   'SELECT * FROM Users WHERE username = @username',
-      //   ['username', sql.VarChar(20), username],
-      // );
-      // console.log(result);
-      done(null, username);
+    passport.deserializeUser(async (user, done) => {
+      done(null, user);
     });
     passport.use(
       new LocalStrategy(async (username, password, done) => {
