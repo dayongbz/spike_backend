@@ -159,7 +159,7 @@ router.post(
   isAuth,
   doAsync(async (req, res) => {
     const result = await runTransQuery(
-      'INSERT INTO Contacts(username, friend_username, address) VALUES(@username, @friend_username, @address',
+      'INSERT INTO Contacts(username, friend_username, address) VALUES(@username, @friend_username, @address)',
       ['username', sql.VarChar(20), req.user.username],
       ['friend_username', sql.VarChar(20), req.body.username],
       ['address', sql.VarChar(100), req.body.address],
