@@ -5,7 +5,7 @@ const passport = require('passport');
 const router = express.Router();
 
 const isAuth = (req, res, next) => {
-  console.log(req.isAuthenticated(), req.user);
+  console.log(req.isAuthenticated(), req.userr);
   if (req.isAuthenticated()) return next();
   res.status(406).send('you have to login');
 };
@@ -13,7 +13,7 @@ const isAuth = (req, res, next) => {
 dotenv.config();
 
 router.get('/', isAuth, (req, res) => {
-  console.log({ username: req.user.username, address: req.user.address });
+  // console.log({ username: req.user.username, address: req.user.address });
   res.send({ username: req.user.username, address: req.user.address });
 });
 
@@ -23,8 +23,7 @@ router.post(
     failureFlash: true,
   }),
   (req, res) => {
-    const { username, keystore } = {};
-    res.send('success');
+    res.send({ username: req.user.username, address: req.user.address });
   },
 );
 
