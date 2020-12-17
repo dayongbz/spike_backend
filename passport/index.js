@@ -40,7 +40,6 @@ module.exports = async () => {
           ['username', sql.VarChar(20), username],
           ['password', sql.VarChar(255), passwordPbkdf],
         );
-        console.log(passwordPbkdf.toString());
         if (result.length == 0) {
           return done(null, false, { message: 'Incorrect' });
         } else {
