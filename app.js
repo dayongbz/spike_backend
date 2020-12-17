@@ -46,21 +46,21 @@ if (!dev) {
   httpsOptions.cert = fs.readFileSync('./devKey/public.pem');
 }
 
-passportConfig();
+passportConfig(passport);
 
 // middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session(sess));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
 app.use(
   cors({
     origin: true,
     credentials: true,
   }),
 );
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session(sess));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 app.use(dev ? logger('dev', { format: 'dev' }) : logger({ format: 'default' }));
 
 app.all('*', (req, res, next) => {

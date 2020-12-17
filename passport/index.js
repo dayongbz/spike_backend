@@ -1,4 +1,3 @@
-const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const CryptoJS = require('crypto-js');
 const sql = require('mssql');
@@ -8,7 +7,7 @@ const { runQuery } = require('../query');
 
 dotenv.config();
 
-module.exports = async () => {
+module.exports = async (passport) => {
   try {
     passport.use(
       new LocalStrategy(async (username, password, done) => {
