@@ -46,8 +46,6 @@ if (!dev) {
   httpsOptions.cert = fs.readFileSync('./devKey/public.pem');
 }
 
-passportConfig(passport);
-
 // middleware
 app.use(
   cors({
@@ -75,6 +73,8 @@ app.all('*', (req, res, next) => {
     res.redirect(to);
   }
 });
+
+passportConfig(passport);
 
 app.use('/users', usersRouter);
 app.use('/emailverify', emailverifyRouter);
