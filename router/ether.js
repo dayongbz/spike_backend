@@ -29,7 +29,7 @@ router.get(
 
 router.get(
   // balance
-  '/balacne',
+  '/balance',
   isAuth,
   doAsync(async (req, res) => {
     const balance = await web3.eth.getBalance(req.user.address);
