@@ -12,6 +12,7 @@ const {
   doAsync,
   defaultErrorMsg,
 } = require('../function/query');
+const { isAuth } = require('../function/login');
 
 const router = express.Router();
 
@@ -138,6 +139,32 @@ router.get(
         ? res.send('You can use it')
         : res.status(406).send("You can't use it")
       : res.status(500).send(result);
+  }),
+);
+
+router.get(
+  '/contact',
+  isAuth,
+  doAsync(async (req, res) => {
+    const result = await runQuery(
+      'SELECT friend_username, address FROM Contacts WHERE username = @username',
+      ['username', sql.VarChar(20), req.user.username],
+    );
+    sendResult(res, result);
+  }),
+);
+
+router.post(
+  '/contact',
+  isAuth,
+  doAsync(async (req, res) => {
+    const result = await runTransQuery(
+      'INSERT INTO Contacts(username, friend_username, address) VALUES(@username, @friend_username, @address',
+      ['username', sql.VarChar(20), req.user.username],
+      ['friend_username', sql.VarChar(20), req.body.username],
+      ['address', sql.VarChar(100), req.body.address],
+    );
+    sendResult(res, result);
   }),
 );
 
