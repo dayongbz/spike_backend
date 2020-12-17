@@ -11,7 +11,6 @@ dotenv.config();
 module.exports = async () => {
   try {
     passport.serializeUser((user, done) => {
-      console.log(user);
       done(null, user.username);
     });
 
@@ -20,7 +19,6 @@ module.exports = async () => {
         'SELECT * FROM Users WHERE username = @username',
         ['username', sql.VarChar(20), username],
       );
-      console.log(result);
       done(null, result[0]);
     });
     passport.use(
@@ -42,6 +40,7 @@ module.exports = async () => {
           ['username', sql.VarChar(20), username],
           ['password', sql.VarChar(255), passwordPbkdf],
         );
+        console.log(passwordPbkdf.toString());
         if (result.length == 0) {
           return done(null, false, { message: 'Incorrect' });
         } else {
