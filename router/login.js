@@ -4,10 +4,16 @@ const passport = require('passport');
 
 const router = express.Router();
 
+const isAuth = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  res.status(406).send('you have to login');
+};
+
 dotenv.config();
 
-router.get('/', (req, res) => {
-  console.log(req.user);
+router.get('/', isAuth, (req, res) => {
+  console.log({ username: req.user.username, address: req.user.address });
+  res.send({ username: req.user.username, address: req.user.address });
 });
 
 router.post(
