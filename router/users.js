@@ -9,7 +9,7 @@ const {
   sendResult,
   doAsync,
   defaultErrorMsg,
-} = require('../query');
+} = require('../function/query');
 
 const router = express.Router();
 

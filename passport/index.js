@@ -4,7 +4,7 @@ const CryptoJS = require('crypto-js');
 const sql = require('mssql');
 const dotenv = require('dotenv');
 
-const { runQuery } = require('../query');
+const { runQuery } = require('../function/query');
 
 dotenv.config();
 

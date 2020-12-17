@@ -9,8 +9,8 @@ const {
   sendResult,
   doAsync,
   defaultErrorMsg,
-} = require('../query');
-const sendMail = require('../mail');
+} = require('../function/query');
+const sendMail = require('../function/mail');
 
 const router = express.Router();
 

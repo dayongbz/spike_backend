@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const usersRouter = require('./router/users');
 const emailverifyRouter = require('./router/emailverify');
 const loginRouter = require('./router/login');
+const etherRouter = require('./router/ether');
 const passportConfig = require('./passport');
 const httpsOptions = {};
 
@@ -79,6 +80,7 @@ passportConfig(passport);
 app.use('/users', usersRouter);
 app.use('/emailverify', emailverifyRouter);
 app.use('/login', loginRouter);
+app.use('/ether', etherRouter);
 
 http.createServer(app).listen(80, () => {
   console.log('start http server');
