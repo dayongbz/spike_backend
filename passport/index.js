@@ -11,7 +11,8 @@ dotenv.config();
 module.exports = async () => {
   try {
     passport.serializeUser((user, done) => {
-      done(null, user);
+      console.log(user);
+      done(null, user.username);
     });
 
     passport.deserializeUser(async (username, done) => {
