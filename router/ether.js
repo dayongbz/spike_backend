@@ -37,4 +37,48 @@ router.get(
   }),
 );
 
+router.get(
+  // 가스료 정보
+  '/send',
+  isAuth,
+  doAsync(async (req, res) => {
+    const gas = await web3.eth.estimateGas({
+      to: req.query.to,
+      from: req.user.address,
+      value: web3.utils.toWei(req.query.value),
+    });
+    const gasPrice = await web3.eth.getGasPrice();
+    const price = web3.utils.fromWei(String(gas * gasPrice));
+    console.log(price);
+    res.send({ gas, gasPrice, price });
+  }),
+
+  router.post(
+    '/send',
+    isAuth,
+    doAsync(async (req, res) => {
+      const gas = await web3.eth.estimateGas({
+        to: req.query.to,
+        from: req.user.address,
+        value: web3.utils.toWei(req.query.value),
+      });
+      const account = await web3.eth.accounts.decrypt(
+        JSON.parse(req.user.keystore),
+        req.user.password,
+      );
+      const signed = await web3.eth.accounts.signTransaction(
+        {
+          to: req.body.to,
+          value: web3.utils.toWei(req.body.value),
+          gas,
+        },
+        account.privateKey,
+      );
+      web3.eth
+        .sendSignedTransaction(signed.rawTransaction)
+        .on('receipt', res.send('success'));
+    }),
+  ),
+);
+
 module.exports = router;

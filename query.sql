@@ -39,7 +39,7 @@ CREATE TABLE Emailverify
 SELECT *
 FROM Users;
 
-DELETE FROM Users WHERE username = 'testspike';
+DELETE FROM Users WHERE username = 'dayong';
 
 SELECT *
 FROM Emailverify;

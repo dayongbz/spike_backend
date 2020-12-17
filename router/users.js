@@ -3,6 +3,8 @@ const CryptoJS = require('crypto-js');
 const sql = require('mssql');
 const dotenv = require('dotenv');
 
+const web3 = require('../function/web');
+
 const {
   runQuery,
   runTransQuery,
@@ -43,23 +45,26 @@ router.post(
   '/',
   doAsync(async (req, res) => {
     const pwdSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-    // const keystoreSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
+    // const keystorePwd = CryptoJS.lib.WordArray.random(128 / 8).toString();
     const password = CryptoJS.PBKDF2(req.body.password, pwdSalt, {
       keySize: 256 / 32,
       iterations: process.env.ITERATION,
     });
-    // const keystore = CryptoJS.AES.encrypt(
-    //   JSON.stringify(req.body.keystore),
-    //   keystoreSalt,
-    // );
+
+    const account = web3.eth.accounts.create();
+    const keystore = web3.eth.accounts.encrypt(
+      account.privateKey,
+      password.toString(),
+    );
+
     const result = await runTransQuery(
       'INSERT INTO Users(username, password, pwd_salt, address, email, keystore) VALUES(@username, @password, @pwd_salt, @address, @email, @keystore)',
       ['username', sql.VarChar(20), req.body.username],
       ['password', sql.VarChar(255), password],
       ['pwd_salt', sql.VarChar(100), pwdSalt],
-      ['address', sql.VarChar(100), req.body.address],
+      ['address', sql.VarChar(100), account.address],
       ['email', sql.VarChar(100), req.body.email],
-      ['keystore', sql.TEXT, req.body.keystore],
+      ['keystore', sql.TEXT, JSON.stringify(keystore)],
       // ['keystore_salt', sql.VarChar(100), keystoreSalt],
     );
     sendResult(res, result);
