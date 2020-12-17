@@ -5,6 +5,7 @@ const passport = require('passport');
 const router = express.Router();
 
 const isAuth = (req, res, next) => {
+  console.log(req.isAuthenticated(), req.user);
   if (req.isAuthenticated()) return next();
   res.status(406).send('you have to login');
 };
