@@ -27,4 +27,14 @@ router.get(
   }),
 );
 
+router.get(
+  // balance
+  '/balacne',
+  isAuth,
+  doAsync(async (req, res) => {
+    const balance = await web3.eth.getBalance(req.user.address);
+    res.send(we3.utils.fromWei(balance));
+  }),
+);
+
 module.exports = router;
