@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const { isAuth } = require('../function/login');
-const { doAsync } = require('../function/query');
+const { doAsync, sendResult } = require('../function/query');
 const web3 = require('../function/web');
 
 dotenv.config();
@@ -74,9 +74,10 @@ router.get(
         },
         account.privateKey,
       );
-      web3.eth
-        .sendSignedTransaction(signed.rawTransaction)
-        .on('receipt', res.send('success'));
+      const result = await web3.eth.sendSignedTransaction(
+        signed.rawTransaction,
+      );
+      sendResult(res, result);
     }),
   ),
 );
