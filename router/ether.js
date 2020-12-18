@@ -60,7 +60,7 @@ router.get(
       const gas = await web3.eth.estimateGas({
         to: req.query.to,
         from: req.user.address,
-        value: web3.utils.toWei(req.query.value),
+        value: web3.utils.toWei(req.body.value),
       });
       const account = await web3.eth.accounts.decrypt(
         JSON.parse(req.user.keystore),
